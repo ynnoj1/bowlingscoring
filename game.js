@@ -20,8 +20,7 @@ module.exports = {
         //no need to check the frame amount on the first roll or attempt
         return true;
       }
-      const lastRoll = this.match.at(-1);
-      const remainingPins = 10 - lastRoll - noOfPins;
+      const remainingPins = this.remainingPins(noOfPins);
       return remainingPins < 0 ? false : true;
     };
     this.moveFrame = function moveFrame() {
@@ -35,6 +34,14 @@ module.exports = {
     this.strike = function strike(noOfPins) {
       return noOfPins == 10 && this.attempt == 1 ? true : false;
     };
-    //TODO spare
+    this.spare = function spare(noOfPins) {
+      const remainingPins = this.remainingPins(noOfPins);
+      return remainingPins == 0 && this.attempt == 2 ? true : false;
+    };
+    this.remainingPins = function remainingPins(noOfPins) {
+      const lastRoll = this.match.at(-1);
+      const remainingPins = 10 - lastRoll - noOfPins;
+      return remainingPins;
+    };
   },
 };
