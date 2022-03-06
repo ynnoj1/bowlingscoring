@@ -35,3 +35,14 @@ test('validRollAmount will be false when noOfPins =-1', () => {
   expect(result).toBe(false);
   spy.mockRestore();
 });
+
+test('validRollAmount will be true when noOfPins =1', () => {
+  // Prepare a spy for the Game.roll method
+  const noOfPins = 1;
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'validRollAmount');
+  const result = bowlingGame.validRollAmount(noOfPins);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(true);
+  spy.mockRestore();
+});
