@@ -9,19 +9,20 @@ module.exports = {
         return;
       }
       this.match = [...this.match, noOfPins];
+      this.moveFrame();
     };
     this.validRollAmount = function validRollAmount(noOfPins) {
       let validRollAmounts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       return validRollAmounts.includes(noOfPins) ? true : false;
     };
     this.validFrameAmount = function validFrameAmount(noOfPins) {
-      this.rollcount;
-      if (this.match.length < 1) {
-        //no need to check the frame amount on the first roll
+      if (this.match.length < 1 || this.attempt == 1) {
+        //no need to check the frame amount on the first roll or attempt
         return true;
       }
-      //TODO add way to figure out the frame and values in frame
-      //TODO calculate sum of frame
+      const lastRoll = this.match.at(-1);
+      const remainingPins = 10 - lastRoll - noOfPins;
+      return remainingPins < 0 ? false : true;
     };
     this.moveFrame = function moveFrame() {
       if (this.attempt == 2) {
