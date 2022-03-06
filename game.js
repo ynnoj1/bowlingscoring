@@ -3,7 +3,7 @@ module.exports = {
     this.player = player;
     this.match = [];
     this.roll = function roll(noOfPins) {
-      console.log(noOfPins);
+      this.match = [...this.match, noOfPins];
     };
   },
 };
