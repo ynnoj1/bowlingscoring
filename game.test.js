@@ -96,6 +96,16 @@ test('strike will be true if 10 is rolled ', () => {
   spy.mockRestore();
 });
 
+test('strike will cause attempt to be 1 ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'strike');
+  bowlingGame.strike(10);
+  const result = bowlingGame.attempt;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(1);
+  spy.mockRestore();
+});
+
 test('strike will be false if 8 is rolled ', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'strike');
@@ -143,5 +153,17 @@ test('spare will be false when 1,8 rolled ', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(false);
+  spy.mockRestore();
+});
+
+test('updateScore will make score 20 when 20 ones are rolled ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'updateScore');
+  for (let i = 0; i < 20; i++) {
+    bowlingGame.roll(1);
+  }
+  const result = bowlingGame.score;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(20);
   spy.mockRestore();
 });
