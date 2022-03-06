@@ -1,0 +1,16 @@
+{
+  "name": "bowlingscoring",
+  "version": "1.0.0",
+  "description": "A bowling scoring program created for the DiUS bowling club",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.test.js",
+    "start": "nodemon index.js"
+  },
+  "author": "Jonny H",
+  "license": "UNLICENSED ",
+  "private": true,
+  "dependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
