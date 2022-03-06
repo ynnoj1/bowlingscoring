@@ -32,5 +32,9 @@ module.exports = {
         this.attempt++;
       }
     };
+    this.strike = function strike(noOfPins) {
+      return noOfPins == 10 && this.attempt == 1 ? true : false;
+    };
+    //TODO spare
   },
 };

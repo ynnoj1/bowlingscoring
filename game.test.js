@@ -86,3 +86,21 @@ test('moveFrame cause attempt to become 1 if current attempt is 2 ', () => {
   expect(result).toBe(1);
   spy.mockRestore();
 });
+
+test('strike will be true if 10 is rolled ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'strike');
+  const result = bowlingGame.strike(10);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(true);
+  spy.mockRestore();
+});
+
+test('strike will be false if 8 is rolled ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'strike');
+  const result = bowlingGame.strike(8);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(false);
+  spy.mockRestore();
+});
