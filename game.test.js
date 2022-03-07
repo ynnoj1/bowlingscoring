@@ -13,6 +13,18 @@ test('roll adds value to bowlingGame.match array', () => {
   spy.mockRestore();
 });
 
+test('roll of 10 will increase frame by 1', () => {
+  const bowlingGame = new Game();
+  const initialframe = bowlingGame.frame;
+  const spy = jest.spyOn(bowlingGame, 'roll');
+  bowlingGame.roll(10);
+  const afterframe = bowlingGame.frame;
+  const result = afterframe - initialframe;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(1);
+  spy.mockRestore();
+});
+
 test('validRollAmount will be false when noOfPins =11', () => {
   const noOfPins = 11;
   const bowlingGame = new Game();
