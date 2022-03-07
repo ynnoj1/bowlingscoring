@@ -55,22 +55,30 @@ test('validRollAmount will be true when noOfPins =1', () => {
   spy.mockRestore();
 });
 
-test('validFrameAmount will return false if 2,9 rolled ', () => {
+test('validFrameAmount will return false if passed remaining pins of -1 ', () => {
   const bowlingGame = new Game();
+  bowlingGame.attempt = 2;
+
   const spy = jest.spyOn(bowlingGame, 'validFrameAmount');
-  bowlingGame.roll(2);
-  const result = bowlingGame.validFrameAmount(9);
+  const result = bowlingGame.validFrameAmount(-1);
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(false);
   spy.mockRestore();
 });
 
-test('validFrameAmount will return true if 1, 2,9 rolled ', () => {
+test('validFrameAmount will return true if passed remaining pins of 0 ', () => {
+  const bowlingGame = new Game();
+  bowlingGame.attempt = 2;
+  const spy = jest.spyOn(bowlingGame, 'validFrameAmount');
+  const result = bowlingGame.validFrameAmount(0);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(true);
+  spy.mockRestore();
+});
+test('validFrameAmount will return true if passed remaining pins of 10 ', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'validFrameAmount');
-  bowlingGame.roll(1);
-  bowlingGame.roll(2);
-  const result = bowlingGame.validFrameAmount(9);
+  const result = bowlingGame.validFrameAmount(10);
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(true);
   spy.mockRestore();
@@ -156,21 +164,31 @@ test('remainingPins will be 10 when 10 rolled ', () => {
   spy.mockRestore();
 });
 
-test('spare will be true when 1,9 rolled ', () => {
+test('spare will be false when remainingPins=5 ', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'spare');
   bowlingGame.roll(1);
-  const result = bowlingGame.spare(9);
+  const result = bowlingGame.spare(10);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(false);
+  spy.mockRestore();
+});
+
+test('spare will be true when passed remainingPins =0', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'spare');
+  bowlingGame.roll(1);
+  const result = bowlingGame.spare(0);
   ~expect(spy).toHaveBeenCalled();
   expect(result).toBe(true);
   spy.mockRestore();
 });
 
-test('spare will be false when 1,8 rolled ', () => {
+test('spare will be false when remainingPins=10 ', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'spare');
   bowlingGame.roll(1);
-  const result = bowlingGame.spare(8);
+  const result = bowlingGame.spare(10);
 
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(false);
@@ -186,5 +204,46 @@ test('updateScore will make score 20 when 20 ones are rolled ', () => {
   const result = bowlingGame.score;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(20);
+  spy.mockRestore();
+});
+
+// test('updateScore will make score 20 for 10,5,0 ', () => {
+//   const bowlingGame = new Game();
+//   const spy = jest.spyOn(bowlingGame, 'updateScore');
+//   bowlingGame.roll(10);
+//   bowlingGame.roll(5);
+//   bowlingGame.roll(0);
+//   const result = bowlingGame.score;
+//   expect(spy).toHaveBeenCalled();
+//   expect(result).toBe(20);
+//   spy.mockRestore();
+// });
+
+test('returnTrick will store X for strike, noOfPins=10 remaininPins=10', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'returnTrick');
+  const result = bowlingGame.returnTrick(10, 10);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe('X');
+  spy.mockRestore();
+});
+
+test('returnTrick will store / for spare of 1,9, noOfPins=9 remainingPins=0', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'returnTrick');
+  bowlingGame.roll(1);
+  const result = bowlingGame.returnTrick(9, 0);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe('/');
+  spy.mockRestore();
+});
+
+test('returnTrick will store 0 for frame of 1,8', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'returnTrick');
+  bowlingGame.roll(1);
+  const result = bowlingGame.returnTrick(2, 8);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe('0');
   spy.mockRestore();
 });
