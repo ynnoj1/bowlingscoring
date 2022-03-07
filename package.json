@@ -4,7 +4,7 @@
   "description": "A bowling scoring program created for the DiUS bowling club",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "start": "nodemon index.js"
   },
   "author": "Jonny H",
