@@ -147,6 +147,15 @@ test('remainingPins will be -1 when 2,9 rolled ', () => {
   spy.mockRestore();
 });
 
+test('remainingPins will be 10 when 10 rolled ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'remainingPins');
+  const result = bowlingGame.remainingPins(10);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(10);
+  spy.mockRestore();
+});
+
 test('spare will be true when 1,9 rolled ', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'spare');
