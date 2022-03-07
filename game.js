@@ -20,12 +20,12 @@ module.exports = {
         return;
       }
       //Store values for, and at the time of the roll
-      this.trick = [...this.trick, this.returnTrick(noOfPins, remainingPins)]; //record if a strike, spare or neither
+      this.storeTrick(noOfPins, remainingPins);
       this.match = [...this.match, noOfPins]; //store the number of pins rolled
       this.frameHistory = [...this.frameHistory, this.frame]; // store the current frame
       //check whether
       this.moveFrame(noOfPins);
-      this.updateScore();
+      this.updateScore(noOfPins, remainingPins);
     };
     this.validRollAmount = function validRollAmount(noOfPins) {
       let validRollAmounts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -43,7 +43,6 @@ module.exports = {
         //we are at the end of the frame
         this.frame++;
         this.attempt = 1;
-        this.updateScore();
       } else if (this.strike(noOfPins)) {
         this.attempt = 1;
         this.frame++;
@@ -58,7 +57,6 @@ module.exports = {
       return remainingPins == 0 && this.attempt == 2 ? true : false;
     };
     this.remainingPins = function remainingPins(noOfPins) {
-      //must be called before the number of pins is added to match
       if (this.match.length < 1 || this.strike(noOfPins)) {
         return 10;
       }
@@ -66,33 +64,29 @@ module.exports = {
       const remainingPins = 10 - lastRoll - noOfPins;
       return remainingPins;
     };
-    this.updateScore = function updateScore() {
+    this.updateScore = function updateScore(noOfPins, remainingPins) {
       //account for simple games
       const matchSum = this.match.reduce((a, b) => a + b, 0);
+      //account for strike
+      if (this.trick.at(-4) == 'X') {
+        const strikeValue = this.match.at(-3) + this.match.at(-2);
+        this.trickResult = [...this.trickResult, strikeValue];
+      } else if (this.trick.at(-2) == '/') {
+        //account for spare
+        const spareValue = this.match.at(-1);
+        this.trickResult = [...this.trickResult, spareValue];
+      }
       //account for spare
-      this.trickResult[this.match.length - 1] = this.spareValue();
       const totalTricks = this.trickResult.reduce((a, b) => a + b, 0);
       this.score = matchSum + totalTricks;
     };
-    this.returnTrick = function returnTrick(noOfPins, remainingPins) {
+    this.storeTrick = function storeTrick(noOfPins, remainingPins) {
       if (this.strike(noOfPins)) {
-        return 'X';
+        this.trick = [...this.trick, 'X'];
       } else if (this.spare(remainingPins)) {
-        return '/';
+        this.trick = [...this.trick, '/'];
       } else {
-        return '0';
-      }
-    };
-    this.spareValue = function spareValue() {
-      if (this.trick.length < 2 || this.trick.length > 10) {
-        //nothing will be due before the second frame
-        return 0;
-      }
-      if (this.trick.at(-2) == '/') {
-        const spareValue = this.match.at(-1);
-        return spareValue;
-      } else {
-        return 0;
+        this.trick = [...this.trick, 0];
       }
     };
   },
