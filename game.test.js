@@ -219,6 +219,18 @@ test('updateScore will make score 20 when 20 ones are rolled ', () => {
 //   spy.mockRestore();
 // });
 
+test('updateScore will make score 20 for 5,5,5 ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'updateScore');
+  bowlingGame.roll(5);
+  bowlingGame.roll(5);
+  bowlingGame.roll(5);
+  const result = bowlingGame.score;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(20);
+  spy.mockRestore();
+});
+
 test('returnTrick will store X for strike, noOfPins=10 remaininPins=10', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'returnTrick');

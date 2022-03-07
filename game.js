@@ -9,18 +9,21 @@ module.exports = {
     this.trick = [];
     this.trickResult = [];
     this.roll = function roll(noOfPins) {
+      //Check that the roll is valid
+      if (!this.validRollAmount(noOfPins)) {
+        console.warn(`${noOfPins} is not a valid noOfPins`);
+        return;
+      }
       const remainingPins = this.remainingPins(noOfPins);
       if (!this.validFrameAmount(remainingPins)) {
         console.log(`${noOfPins} exceeeds frame limit`);
         return;
       }
-      this.trick = [...this.trick, this.returnTrick(noOfPins, remainingPins)];
+      //Store values for, and at the time of the roll
+      this.trick = [...this.trick, this.returnTrick(noOfPins, remainingPins)]; //record if a strike, spare or neither
       this.match = [...this.match, noOfPins]; //store the number of pins rolled
       this.frameHistory = [...this.frameHistory, this.frame]; // store the current frame
-      if (!this.validRollAmount(noOfPins)) {
-        console.warn(`${noOfPins} is not a valid noOfPins`);
-        return;
-      }
+      //check whether
       this.moveFrame(noOfPins);
       this.updateScore();
     };
@@ -66,7 +69,10 @@ module.exports = {
     this.updateScore = function updateScore() {
       //account for simple games
       const matchSum = this.match.reduce((a, b) => a + b, 0);
-      this.score = matchSum;
+      //account for spare
+      this.trickResult[this.match.length - 1] = this.spareValue();
+      const totalTricks = this.trickResult.reduce((a, b) => a + b, 0);
+      this.score = matchSum + totalTricks;
     };
     this.returnTrick = function returnTrick(noOfPins, remainingPins) {
       if (this.strike(noOfPins)) {
@@ -75,6 +81,18 @@ module.exports = {
         return '/';
       } else {
         return '0';
+      }
+    };
+    this.spareValue = function spareValue() {
+      if (this.trick.length < 2 || this.trick.length > 10) {
+        //nothing will be due before the second frame
+        return 0;
+      }
+      if (this.trick.at(-2) == '/') {
+        const spareValue = this.match.at(-1);
+        return spareValue;
+      } else {
+        return 0;
       }
     };
   },
