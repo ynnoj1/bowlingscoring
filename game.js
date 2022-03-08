@@ -1,13 +1,13 @@
 module.exports = {
   Game: function Game(player = 'Player1') {
     this.player = player;
+    this.currentscore = 0;
+    this.frames = [];
     this.match = [];
     this.frame = 1;
     this.attempt = 1;
-    this.currentscore = 0;
     this.trick = []; //a strike or spare will be considered a trick shot
     this.trickResult = [];
-    this.frameLog = [];
     this.attemptLog = [];
     this.remainingRollLog = [];
     this.finalFrameTrick = 0;
@@ -38,7 +38,7 @@ module.exports = {
       //Store values for, and at the time of the roll
       this.storeTrick(noOfPins, remainingPins);
       this.match = [...this.match, noOfPins]; //store the number of pins rolled
-      this.frameLog = [...this.frameLog, this.frame]; // store the current frame
+      this.frames = [...this.frames, this.frame]; // store the current frame
       this.attemptLog = [...this.attemptLog, this.attempt];
       this.remainingRollLog = [...this.remainingRollLog, this.remainingRolls];
 
@@ -146,6 +146,14 @@ module.exports = {
       this.remainingRolls = this.remainingRolls - 1;
       this.attempt = this.attempt + 1;
       this.trickInFinalFrame();
+    };
+    this.scoreboard = function scoreboard() {
+      const filteredGame = Object.fromEntries(
+        Object.entries(this).filter(([key, value]) =>
+          ['player', 'currentscore', 'frames', 'match', 'trick'].includes(key)
+        )
+      );
+      console.table(filteredGame);
     };
   },
 };
