@@ -84,26 +84,54 @@ test('validFrameAmount will return true if passed remaining pins of 10 ', () => 
   spy.mockRestore();
 });
 
-//TODO test move frame
-test('moveFrame cause attempt to become 2 if current attempt is 1 ', () => {
+test('updateTurn cause attempt to become 2 if current attempt is 1 ', () => {
   const bowlingGame = new Game();
-  const spy = jest.spyOn(bowlingGame, 'moveFrame');
+  const spy = jest.spyOn(bowlingGame, 'updateTurn');
   bowlingGame.attempt = 1;
-  bowlingGame.moveFrame();
+  bowlingGame.updateTurn();
   const result = bowlingGame.attempt;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(2);
   spy.mockRestore();
 });
 
-test('moveFrame cause attempt to become 1 if current attempt is 2 ', () => {
+test('updateTurn cause attempt to become 1 if current attempt is 2 ', () => {
   const bowlingGame = new Game();
-  const spy = jest.spyOn(bowlingGame, 'moveFrame');
+  const spy = jest.spyOn(bowlingGame, 'updateTurn');
   bowlingGame.attempt = 2;
-  bowlingGame.moveFrame();
+  bowlingGame.updateTurn();
   const result = bowlingGame.attempt;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(1);
+  spy.mockRestore();
+});
+
+test('updateFinalFrame decreases remainingRolls by 1 for roll in final frame ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'updateFinalFrame');
+  //conditions frame of 10
+  bowlingGame.frame = 10;
+  const before = bowlingGame.remainingRolls;
+  bowlingGame.updateFinalFrame(5);
+  const after = bowlingGame.remainingRolls;
+  const result = after - before;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(-1);
+  spy.mockRestore();
+});
+
+test('updateFinalFrame increase attempt by 1 for roll of 5 in final frame ', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'updateFinalFrame');
+
+  for (let i = 0; i < 9; i++) {
+    bowlingGame.roll(10);
+  }
+  //conditions frame of 10
+  bowlingGame.updateFinalFrame(5);
+  const result = bowlingGame.attempt;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(2);
   spy.mockRestore();
 });
 
@@ -201,23 +229,11 @@ test('updateScore will make score 20 when 20 ones are rolled ', () => {
   for (let i = 0; i < 20; i++) {
     bowlingGame.roll(1);
   }
-  const result = bowlingGame.score;
+  const result = bowlingGame.currentscore;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(20);
   spy.mockRestore();
 });
-
-// test('updateScore will make score 20 for 10,5,0 ', () => {
-//   const bowlingGame = new Game();
-//   const spy = jest.spyOn(bowlingGame, 'updateScore');
-//   bowlingGame.roll(10);
-//   bowlingGame.roll(5);
-//   bowlingGame.roll(0);
-//   const result = bowlingGame.score;
-//   expect(spy).toHaveBeenCalled();
-//   expect(result).toBe(20);
-//   spy.mockRestore();
-// });
 
 test('updateScore will make score 20 for 5,5,5,0 ', () => {
   const bowlingGame = new Game();
@@ -226,7 +242,7 @@ test('updateScore will make score 20 for 5,5,5,0 ', () => {
   bowlingGame.roll(5);
   bowlingGame.roll(5);
   bowlingGame.roll(0);
-  const result = bowlingGame.score;
+  const result = bowlingGame.currentscore;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(20);
   spy.mockRestore();
@@ -240,7 +256,7 @@ test('updateScore will make score 20 for 10,5,0,0 ', () => {
   bowlingGame.roll(0);
   bowlingGame.roll(0);
   bowlingGame.roll(0);
-  const result = bowlingGame.score;
+  const result = bowlingGame.currentscore;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(20);
   spy.mockRestore();
@@ -252,7 +268,7 @@ test('updateScore will make score 300 for 12 rolls of 10', () => {
   for (let i = 0; i < 12; i++) {
     bowlingGame.roll(10);
   }
-  const result = bowlingGame.score;
+  const result = bowlingGame.currentscore;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(300);
   spy.mockRestore();
@@ -268,7 +284,7 @@ test('storeTrick will store X for strike, noOfPins=10 remaininPins=10', () => {
   spy.mockRestore();
 });
 
-test('storeTrick will store / for spare of 1,9, noOfPins=9 remainingPins=0', () => {
+test('storeTrick will store / for spare of 1,9; noOfPins=9 remainingPins=0', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'storeTrick');
   bowlingGame.attempt = 2;
@@ -279,11 +295,44 @@ test('storeTrick will store / for spare of 1,9, noOfPins=9 remainingPins=0', () 
   spy.mockRestore();
 });
 
-test('storeTrick will store 0 for frame of 1,8', () => {
+test('storeTrick will store 0 for frame of 1,8; noOfPins=9 remainingPins=0', () => {
   const bowlingGame = new Game();
   const spy = jest.spyOn(bowlingGame, 'storeTrick');
-  bowlingGame.storeTrick(2, 8);
+  bowlingGame.storeTrick(1, 9);
   const result = bowlingGame.trick.at(-1);
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(1);
+  spy.mockRestore();
+});
+
+test('trickInFinalFrame will increase remainingRolls by 1 if strike in final frame', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'trickInFinalFrame');
+  for (let i = 0; i < 9; i++) {
+    bowlingGame.roll(10);
+  }
+  bowlingGame.roll(10);
+  const before = bowlingGame.remainingRolls;
+  bowlingGame.trickInFinalFrame();
+  const after = bowlingGame.remainingRolls;
+  const result = after - before;
+  expect(spy).toHaveBeenCalled();
+  expect(result).toBe(1);
+  spy.mockRestore();
+});
+
+test('trickInFinalFrame will not change remainingRolls if no trick in final frame', () => {
+  const bowlingGame = new Game();
+  const spy = jest.spyOn(bowlingGame, 'trickInFinalFrame');
+  for (let i = 0; i < 9; i++) {
+    bowlingGame.roll(10);
+  }
+  bowlingGame.roll(1);
+  bowlingGame.roll(2);
+  const before = bowlingGame.remainingRolls;
+  bowlingGame.trickInFinalFrame();
+  const after = bowlingGame.remainingRolls;
+  const result = after - before;
   expect(spy).toHaveBeenCalled();
   expect(result).toBe(0);
   spy.mockRestore();
