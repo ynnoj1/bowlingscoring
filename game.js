@@ -37,6 +37,11 @@ module.exports = {
         this.endGame();
       }
     };
+    this.rollMany = function rollMany(...arrayOfRolls) {
+      for (let i = 0; i < arrayOfRolls.length; i++) {
+        this.roll(arrayOfRolls[i]);
+      }
+    };
     this.rollValidation = function rollValidation(noOfPins, remainingPins) {
       if (!this.validRollAmount(noOfPins)) {
         console.warn(`${noOfPins} is not a valid noOfPins`);
@@ -44,7 +49,7 @@ module.exports = {
       }
       if (!this.validFrameAmount(remainingPins)) {
         console.log(
-          `${noOfPins} exceeeds the total amount of pins in a single frame`
+          `Roll of ${noOfPins} at index number ${this.match.length} exceeeds the total amount of 10 pins in a single frame`
         );
         return;
       }
