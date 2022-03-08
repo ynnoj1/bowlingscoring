@@ -27,23 +27,22 @@ Initialise the game by defining a variable and providing the Game object with th
 For example:<br>
 `const bowlingGame = new Game('Jonny')`
 <br>
-<br>
 
 ### Roll a ball
 
 Roll a ball by entering the provding the roll function with the number of you have rolled (noOfPins)<br>
 `bowllingGame.roll(noOfPins)` <br>
 For example:<br>
-`bowllingGame.roll(4)`<br><br>
+`bowllingGame.roll(4)`<br>
 
 You can roll many balls at once by providing the number of pins for each roll separated by a comma<br>
 `bowllingGame.roll(noOfPins,noOfPins,noOfPins)`<br>
 For example:<br>
-`bowlingGame.rollMany(1, 2, 10)`<br><br>
+`bowlingGame.rollMany(1, 2, 10)`<br>
 
 ### Check the score
 
 Get the score of your game by calling the score() method on the bowlingGame object<br>
-`bowlingGame.score();`<br><br>
+`bowlingGame.score();`<br>
 You can also view the score and other information about your game by calling the scoreboard() method on the bowlingGame object<br>
-`bowlingGame.scoreboard();`<br><br>
+`bowlingGame.scoreboard();`<br>
