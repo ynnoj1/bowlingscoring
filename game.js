@@ -19,7 +19,25 @@ module.exports = {
     this.roll = function roll(noOfPins) {
       //Check that the roll is valid or if the game should have ended
       const remainingPins = this.remainingPins(noOfPins);
+      this.rollValidation(noOfPins, remainingPins);
 
+      //Store values for, and at the time of the roll
+      this.storeRollValues(noOfPins, remainingPins);
+
+      //Update the score based on the current roll and previous trick shots
+      this.updateScore(noOfPins, remainingPins);
+
+      //Progress the game based on different rules for the final frame. End the game if there are no remaining rolls.
+      if (this.frame != 10) {
+        this.updateTurn(noOfPins);
+      } else {
+        this.updateFinalFrame();
+      }
+      if (this.remainingRolls == 0) {
+        this.endGame();
+      }
+    };
+    this.rollValidation = function rollValidation(noOfPins, remainingPins) {
       if (!this.validRollAmount(noOfPins)) {
         console.warn(`${noOfPins} is not a valid noOfPins`);
         return;
@@ -33,25 +51,6 @@ module.exports = {
       if (this.gameEnded == 1) {
         console.log(`Game completed. Your score is ${this.currentscore}`);
         return;
-      }
-
-      //Store values for, and at the time of the roll
-      this.storeTrick(noOfPins, remainingPins);
-      this.match = [...this.match, noOfPins]; //store the number of pins rolled
-      this.frames = [...this.frames, this.frame]; // store the current frame
-      this.attemptLog = [...this.attemptLog, this.attempt];
-      this.remainingRollLog = [...this.remainingRollLog, this.remainingRolls];
-
-      //check whether to move frames and if there is a trick in the final frame
-
-      this.updateScore(noOfPins, remainingPins);
-      if (this.frame == 10) {
-        this.updateFinalFrame();
-      } else {
-        this.updateTurn(noOfPins);
-      }
-      if (this.remainingRolls == 0) {
-        this.endGame();
       }
     };
     this.validRollAmount = function validRollAmount(noOfPins) {
@@ -117,7 +116,11 @@ module.exports = {
       const totalTricks = this.trickResult.reduce((a, b) => a + b, 0);
       this.currentscore = matchSum + totalTricks;
     };
-    this.storeTrick = function storeTrick(noOfPins, remainingPins) {
+    this.storeRollValues = function storeRollValues(noOfPins, remainingPins) {
+      this.match = [...this.match, noOfPins]; //store the number of pins rolled
+      this.frames = [...this.frames, this.frame]; // store the current frame
+      this.attemptLog = [...this.attemptLog, this.attempt];
+      this.remainingRollLog = [...this.remainingRollLog, this.remainingRolls];
       if (this.strike(noOfPins)) {
         this.trick = [...this.trick, 'X'];
       } else if (this.spare(remainingPins)) {
